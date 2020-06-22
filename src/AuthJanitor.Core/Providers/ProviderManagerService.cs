@@ -5,21 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace AuthJanitor.Providers
 {
 
     public class ProviderManagerService : IProviderStore
     {
-        public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
-        {
-            WriteIndented = false,
-            IgnoreNullValues = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { new JsonStringEnumConverter() }
-        };
-
         private readonly IServiceProvider _serviceProvider;
 
         public ProviderManagerService(
@@ -55,9 +46,10 @@ namespace AuthJanitor.Providers
             return instance;
         }
 
+        //It should return a Interface
         public AuthJanitorProviderConfiguration GetProviderConfiguration(ProviderIdentifier providerId) => ActivatorUtilities.CreateInstance(_serviceProvider, GetProviderMetadata(providerId).ProviderConfigurationType) as AuthJanitorProviderConfiguration;
         
-        public AuthJanitorProviderConfiguration GetProviderConfiguration(ProviderIdentifier providerId, string serializedConfiguration) => JsonSerializer.Deserialize(serializedConfiguration, GetProviderMetadata(providerId).ProviderConfigurationType, SerializerOptions) as AuthJanitorProviderConfiguration;
+        public AuthJanitorProviderConfiguration GetProviderConfiguration(ProviderIdentifier providerId, string serializedConfiguration) => JsonSerializer.Deserialize(serializedConfiguration, GetProviderMetadata(providerId).ProviderConfigurationType, ProviderConfiguration.SerializerOptions) as AuthJanitorProviderConfiguration;
         
     }
 
