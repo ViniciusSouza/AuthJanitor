@@ -8,16 +8,16 @@ namespace AuthJanitor.Providers
         public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
         {
             WriteIndented = false,
-            IgnoreNullValues = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+            IgnoreNullValues = true,            
             Converters = { new JsonStringEnumConverter() }
         };
 
-        public bool IsConfigurationValid(LoadedProviderMetadata metadata, string serializedConfiguration)
+        public bool IsConfigurationValid(LoadedProviderMetadata metadata, string jsonString)
         {
             try
             {
-                var obj = JsonSerializer.Deserialize(serializedConfiguration, metadata.ProviderConfigurationType, SerializerOptions);
+                var obj = JsonSerializer.Deserialize(jsonString, metadata.ProviderConfigurationType, SerializerOptions);
                 return obj != null;
             }
             catch { return false; }
