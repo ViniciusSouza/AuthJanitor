@@ -28,7 +28,9 @@ namespace AuthJanitor.Tests
                 ProviderConfigurationType = typeof(AppSettingConfiguration),
             };
 
-            providerConfiguration.IsConfigurationValid(providerMetadata, "{ \"SettingName\":\"Test\", \"CommitAsConnectionString\":\"false\" }");
+            Assert.True(providerConfiguration.IsConfigurationValid(providerMetadata, "{ \"SettingName\":\"Test\", \"CommitAsConnectionString\":true }"));
+            Assert.True(providerConfiguration.IsConfigurationValid(providerMetadata, "{ \"settingName\":\"Test\", \"commitAsConnectionString\":true }"));
+            Assert.True(providerConfiguration.IsConfigurationValid(providerMetadata, "{ \"settingname\":\"Test\", \"COMMITASCONNECTIONSTRING\":true }"));
         }
 
 
