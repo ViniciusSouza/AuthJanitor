@@ -1,15 +1,16 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace AuthJanitor.Providers
 {
-    public class ProviderConfiguration : IProviderConfiguration
+    public class ProviderConfigurationValidator : IProviderConfigurationValidator
     {
         public static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
         {
             WriteIndented = false,
             PropertyNameCaseInsensitive = true,
-            IgnoreNullValues = true,            
+            IgnoreNullValues = true,
             Converters = { new JsonStringEnumConverter() }
         };
 
@@ -21,6 +22,21 @@ namespace AuthJanitor.Providers
                 return obj != null;
             }
             catch { return false; }
+        }
+
+        public static IAuthJanitorProviderConfiguration CreateProviderConfiguration(Type providerConfigurationType, string jsonString)
+        {
+            try
+            {
+                return (IAuthJanitorProviderConfiguration)
+                    JsonSerializer.Deserialize(jsonString, providerConfigurationType, SerializerOptions);
+            }
+            catch { return null; }
+        }
+
+        public interface IAuthJanitorProviderConfiguration
+        {
+            public bool IsConfigurationValid();
         }
     }
 }

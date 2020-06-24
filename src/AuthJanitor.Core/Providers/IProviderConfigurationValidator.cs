@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AuthJanitor.Providers
 {
-    public interface IProviderConfiguration
+    public interface IProviderConfigurationValidator
     {
         bool IsConfigurationValid(LoadedProviderMetadata metadata, string serializedConfiguration);
     }

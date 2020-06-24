@@ -27,7 +27,7 @@ namespace AuthJanitor.Services
         private readonly IIdentityService _identityService;
         private readonly IProviderStore _providerManager;
         private readonly EventDispatcherMetaService _eventDispatcher;
-        private readonly IProviderConfiguration _providerConfiguration;
+        private readonly IProviderConfigurationValidator _providerConfigurationValidator;
 
         private readonly IDataStore<Resource> _resources;
         private readonly Func<Resource, ResourceViewModel> _resourceViewModel;
@@ -36,14 +36,14 @@ namespace AuthJanitor.Services
             IIdentityService identityService,
             EventDispatcherMetaService eventDispatcher,
             IProviderStore providerManager,
-            IProviderConfiguration providerConfiguration,
+            IProviderConfigurationValidator providerConfiguration,
             IDataStore<Resource> resourceStore,
             Func<Resource, ResourceViewModel> resourceViewModelDelegate)
         {
             _identityService = identityService;
             _eventDispatcher = eventDispatcher;
             _providerManager = providerManager;
-            _providerConfiguration = providerConfiguration;
+            _providerConfigurationValidator = providerConfiguration;
             _resources = resourceStore;
             _resourceViewModel = resourceViewModelDelegate;
         }
@@ -58,7 +58,7 @@ namespace AuthJanitor.Services
             if (provider == null)
                 return new NotFoundObjectResult("Provider type not found");
 
-            if (!_providerConfiguration.IsConfigurationValid(provider, resource.SerializedProviderConfiguration))
+            if (!_providerConfigurationValidator.IsConfigurationValid(provider, resource.SerializedProviderConfiguration))
                 return new BadRequestErrorMessageResult("Invalid Provider configuration!");
 
             Resource newResource = new Resource()
@@ -130,7 +130,7 @@ namespace AuthJanitor.Services
             if (provider == null)
                 return new NotFoundObjectResult("Provider type not found");
 
-            if (!_providerConfiguration.IsConfigurationValid(provider, resource.SerializedProviderConfiguration))
+            if (!_providerConfigurationValidator.IsConfigurationValid(provider, resource.SerializedProviderConfiguration))
                 return new BadRequestErrorMessageResult("Invalid Provider configuration!");
 
             Resource newResource = new Resource()
